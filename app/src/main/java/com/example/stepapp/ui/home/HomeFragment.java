@@ -37,6 +37,8 @@ public class HomeFragment extends Fragment {
     private SensorEventListener listener;
 
     // TODO 1: ACC sensors.
+    private Sensor mSensorACC;
+    private SensorManager mSensorManager;
 
 
     // Step Detector sensor
@@ -48,16 +50,21 @@ public class HomeFragment extends Fragment {
 
         // TODO 9: Initialize the TextView variable
         stepsCountTextView = (TextView) root.findViewById(R.id.stepsCount);
-
+//        Initialize the ProgressBar variable
+        stepsCountProgressBar = (ProgressBar) root.findViewById(R.id.progressBar);
 
         // TODO 2: Get an instance of the sensor manager.
+        mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+//        get the default sensor for linear acceleration (gravity force subtracted)
+//        the value can be null if the sensor doesn't exist
+        mSensorACC = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 
 
         // instance of the sensor manager for the step detector
 
         // TODO 11
         // instantiate the StepCounterListener
-        listener = new StepCounterListener();
+        listener = new StepCounterListener(stepsCountTextView, stepsCountProgressBar);
 
         // Toggle group button
         materialButtonToggleGroup = (MaterialButtonToggleGroup) root.findViewById(R.id.toggleButtonGroup);
@@ -68,11 +75,18 @@ public class HomeFragment extends Fragment {
 
                     //Place code related to Start button
                     Toast.makeText(getContext(), "START", Toast.LENGTH_SHORT).show();
+                    stepsCountProgressBar.setIndeterminate(false);
 
                     // TODO 3: Check if the Accelerometer sensor exists
+                    if (mSensorACC != null) {
+                        mSensorManager.registerListener(listener, mSensorACC, SensorManager.SENSOR_DELAY_NORMAL);
+                    }
+                    else {
+                        Toast.makeText(getContext(), R.string.acc_not_available, Toast.LENGTH_SHORT).show();
+                    }
 
 
-                    // Check if the Step detector sensor exists
+                    // TODO Check if the Step detector sensor exists
 
 
 
@@ -81,6 +95,7 @@ public class HomeFragment extends Fragment {
                     Toast.makeText(getContext(), "STOP", Toast.LENGTH_SHORT).show();
 
                     // TODO 4: Unregister the listener
+                    mSensorManager.unregisterListener(listener);
                 }
             }
         });
@@ -108,9 +123,15 @@ class StepCounterListener implements SensorEventListener {
 
     // TextView
     TextView stepsCountTextView;
+//    ProgressBar
+    ProgressBar stepsCountProgressBar;
 
     //TODO 10
-
+    public StepCounterListener(TextView stepsCountTextView, ProgressBar stepsCountProgressBar) {
+        this.stepsCountTextView = stepsCountTextView;
+//        Initialize the ProgressBar instance in the StepCounterListener
+        this.stepsCountProgressBar = stepsCountProgressBar;
+    }
 
 
     @Override
@@ -122,12 +143,14 @@ class StepCounterListener implements SensorEventListener {
             case Sensor.TYPE_LINEAR_ACCELERATION:
 
             // TODO 6: Get sensor's values
+                float x = event.values[0];
+                float y = event.values[1];
+                float z = event.values[2];
 
 
             //////////////////////////// -- PRINT ACC VALUES -- ////////////////////////////////////
             // TODO 7: Uncomment the following code
 
-                /*
                 // Timestamp
                 long timeInMillis = System.currentTimeMillis() + (event.timestamp - SystemClock.elapsedRealtimeNanos()) / 1000000;
 
@@ -145,14 +168,17 @@ class StepCounterListener implements SensorEventListener {
                             + String.valueOf(z) + " t: " + String.valueOf(date));
 
                 }
-                */
 
 
             ////////////////////////////////////////////////////////////////////////////////////////
 
             // TODO 8: Compute the ACC magnitude
+                accMag = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
+//                TODO try to implement a better algorithm for detecting steps from the accelerometer
+
 
             //Update the Magnitude series
+                mACCSeries.add((int) accMag);
 
 
             /// STEP COUNTER ACC ////
@@ -173,6 +199,7 @@ class StepCounterListener implements SensorEventListener {
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+//        TODO (project extension) check if the sensor's accuracy is good enough
 
     }
 
@@ -213,6 +240,9 @@ class StepCounterListener implements SensorEventListener {
                     Log.d("ACC STEPS: ", String.valueOf(mACCStepCounter));
 
                     //TODO 12: update the text view
+                    stepsCountTextView.setText(String.valueOf(mACCStepCounter));
+//                    TODO A5: update the ProgressBar
+                    stepsCountProgressBar.setProgress(mACCStepCounter, true);
                 }
             }
         }

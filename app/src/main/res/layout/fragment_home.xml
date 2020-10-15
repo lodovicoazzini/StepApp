@@ -60,7 +60,11 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:progressDrawable="@drawable/circle"/>
+        android:progressDrawable="@drawable/circle"
+        android:max="100"
+        android:rotation="-45"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+
 
 
     <com.google.android.material.button.MaterialButtonToggleGroup
@@ -77,17 +81,22 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/toggleStart"
             style="?attr/materialButtonOutlinedStyle"
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/toggle_start"/>
+            android:text="@string/toggle_start"
+            android:textColor="@color/colorPrimary"
+            android:drawableRight="@drawable/ic_button_start"
+            android:drawableTint="@color/colorPrimary"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/toggleStop"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/toggle_stop" />
+            android:text="@string/toggle_stop"
+            android:textColor="@color/colorStop"
+            android:drawableRight="@drawable/ic_button_stop"
+            android:drawableTint="@color/colorStop"/>
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
