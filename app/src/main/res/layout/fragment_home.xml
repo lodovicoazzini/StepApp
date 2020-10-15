@@ -61,7 +61,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:progressDrawable="@drawable/circle"
-        android:max="100"
+        android:max="@string/goal_value"
         android:rotation="-45"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
 

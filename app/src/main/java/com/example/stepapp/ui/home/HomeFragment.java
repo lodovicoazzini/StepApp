@@ -61,8 +61,7 @@ public class HomeFragment extends Fragment {
         mSensorACC = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 
 
-//        instance of the sensor manager for the step detector
-//        the value can be null if the sensor doesn't exist
+//        get the default step detector sensor
         mSensorSTEP = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
 
 //        instantiate the StepCounterListener
@@ -127,7 +126,7 @@ class StepCounterListener implements SensorEventListener {
     private int lastXPoint = 1;
     int stepThreshold = 6;
 
-//    Android step detector
+//    Step detector counter
     int mSTEPStepCounter = 0;
 
 //    TextView
